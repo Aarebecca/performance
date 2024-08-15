@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "strict": true,
+    "target": "ESNext",
+    "outDir": "dist",
+    "skipLibCheck": true
+  },
+  "include": ["src", "types", "src/global.d.ts"],
+  "exclude": ["node_modules", "dist", "src/client"]
+}

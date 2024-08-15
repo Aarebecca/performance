@@ -1,0 +1,37 @@
+{
+  "name": "perf",
+  "version": "1.0.0",
+  "description": "Generic Frontend Performance Test Framework",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "perf": "bin/perf.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && run-s build:* cp:*",
+    "build:node": "tsc",
+    "build:client": "tsc --project ./src/client/tsconfig.json",
+    "cp:client": "cp ./src/client/index.html ./dist/client",
+    "cp:type": "cp ./src/global.d.ts ./dist",
+    "watch": "rm -rf dist && run-p watch:*",
+    "watch:node": "tsc -w",
+    "watch:client": "tsc --project ./src/client/tsconfig.json -w"
+  },
+  "author": "Aarebecca",
+  "license": "ISC",
+  "dependencies": {
+    "glob": "^11.0.0",
+    "systeminformation": "^5.23.4",
+    "vite": "^5.4.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.12",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,0 +1,8 @@
+# dependencies
+node_modules
+
+# lock file
+package-lock.json
+
+# production
+dist
