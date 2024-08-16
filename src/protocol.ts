@@ -4,7 +4,7 @@
  * - complete: server is notifying client that all tasks are completed
  * - disconnect: server is notifying client to disconnect
  */
-type ServerSignal = 'assign' | 'complete' | 'disconnect';
+export type ServerSignal = 'assign' | 'complete';
 
 /**
  * @description
@@ -12,22 +12,18 @@ type ServerSignal = 'assign' | 'complete' | 'disconnect';
  * - request: client is requesting for tasks
  * - report: client is sending back the result of current task
  */
-type ClientSignal = 'ready' | 'request' | 'report';
+export type ClientSignal = 'ready' | 'request' | 'report' | 'disconnect';
 
-interface Message {
-  signal: ServerSignal | ClientSignal;
-}
-
-interface ServerAssignMessage {
+export interface ServerAssignMessage {
   signal: 'assign';
   task: string;
 }
 
-interface ServerCompleteMessage {
+export interface ServerCompleteMessage {
   signal: 'complete';
 }
 
-interface ServerDisconnectMessage {
+export interface ServerDisconnectMessage {
   signal: 'disconnect';
 }
 
@@ -36,17 +32,17 @@ export type ServerMessage =
   | ServerCompleteMessage
   | ServerDisconnectMessage;
 
-interface ClientReadyMessage {
+export interface ClientReadyMessage {
   signal: 'ready';
   tasks: string[];
   userAgent: string;
 }
 
-interface ClientRequestMessage {
+export interface ClientRequestMessage {
   signal: 'request';
 }
 
-interface ClientReportMessage {
+export interface ClientReportMessage {
   signal: 'report';
   task: string;
   result: {
@@ -68,7 +64,12 @@ interface ClientReportMessage {
   };
 }
 
+export interface ClientDisconnectMessage {
+  signal: 'disconnect';
+}
+
 export type ClientMessage =
   | ClientReadyMessage
   | ClientRequestMessage
-  | ClientReportMessage;
+  | ClientReportMessage
+  | ClientDisconnectMessage;
