@@ -9,7 +9,7 @@ import type { ResolvedConfig } from './types';
 
 export function Performance(): Plugin {
   return {
-    name: 'vite-plugin-antv-performance',
+    name: 'vite-plugin-performance-test',
 
     configResolved(config) {
       shared.config = config as any;
