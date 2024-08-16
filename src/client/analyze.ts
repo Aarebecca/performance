@@ -42,5 +42,5 @@ export function analyzeFrame(values: number[]) {
 
   const min = Math.min(...FRs);
 
-  return { mean: Math.round(weightedAvgFR), variance, min };
+  return { avg: Math.round(weightedAvgFR), variance, min };
 }
