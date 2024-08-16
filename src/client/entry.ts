@@ -1,26 +1,26 @@
+import { analyzeFrame, analyzeTime } from './analysis';
+import config from './config.json';
 import * as tests from './exports';
 import { Performance } from './performance';
-import { analyzeTime, analyzeFrame } from './analysis';
 import type { Test } from './types';
-import config from './config.json';
 
 const tasks = { ...tests } as Record<string, Test>;
 
 function connect() {
-  const socketPort = (config as any).perf.socketPort;
+  const port = (config as any).perf.socket.port;
 
-  const ws = new WebSocket(`ws://localhost:${socketPort}`);
+  const ws = new WebSocket(`ws://localhost:${port}`);
   const runner = new Runner();
 
   ws.onopen = () => {
-    console.log('WebSocket connected on port:', socketPort);
+    console.log('WebSocket connected on port:', port);
 
     ws.send(
       JSON.stringify({
         signal: 'ready',
         list: Object.keys(tasks),
         userAgent: navigator.userAgent,
-      })
+      }),
     );
     ws.send(JSON.stringify({ signal: 'request' }));
   };

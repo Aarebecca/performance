@@ -1,13 +1,13 @@
-import crypto from 'crypto';
-import si from 'systeminformation';
-import { join } from 'path';
-import { mkdirSync, writeFileSync } from 'fs';
-import { shared } from './shared';
 import { execSync } from 'child_process';
+import crypto from 'crypto';
+import { mkdirSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import si from 'systeminformation';
 import { print } from './print';
+import { shared } from './shared';
 
 export async function exportReport(data: any) {
-  const reportDir = shared.config.perf.reportDir;
+  const reportDir = shared.config.perf.report.dir;
   const deviceInfo = await getDeviceInfo();
   const repoHash = getRepoInfo();
 
@@ -23,7 +23,7 @@ export async function exportReport(data: any) {
 
   writeFileSync(
     reportPath,
-    JSON.stringify({ device: deviceInfo, repo: repoHash, ...data })
+    JSON.stringify({ device: deviceInfo, repo: repoHash, ...data }),
   );
 
   print(`Report exported to: \x1b[36m${join(reportDir, filename)}\x1b[0m`);
@@ -63,7 +63,7 @@ function getHash(data: string) {
 function assign<T extends Record<any, any>>(
   target: Record<any, any>,
   source: T,
-  keys: (keyof T)[]
+  keys: (keyof T)[],
 ) {
   for (const key of keys) {
     if (source[key] !== undefined) target[key] = source[key];

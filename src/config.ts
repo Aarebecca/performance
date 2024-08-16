@@ -1,9 +1,9 @@
-import type { UserConfig } from './types';
+import { __temp_dir__ } from './constants';
 import { Performance } from './plugin';
-import { __temp_dir__, __user_dir__ } from './constants';
+import type { UserConfig } from './types';
 
 export function defineConfig(
-  config: Omit<UserConfig, 'root'> = {}
+  config: Omit<UserConfig, 'root'> = {},
 ): UserConfig {
   const { plugins = [], server } = config;
 
@@ -12,9 +12,16 @@ export function defineConfig(
     plugins: [...plugins, Performance()],
     perf: {
       root: process.cwd(),
-      reportDir: 'perf/reports',
-      socketPort: 3000,
       ...config.perf,
+      report: {
+        dir: 'perf/reports',
+        ...config.perf?.report,
+      },
+      socket: {
+        port: 3000,
+        timeout: 10 * 1000,
+        ...config.perf?.socket,
+      },
     },
     root: __temp_dir__,
     server: {

@@ -1,10 +1,11 @@
-import type { Plugin } from 'vite';
-import { createServer } from './server';
-import { UserConfig } from './types';
-import { shared } from './shared';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
+import type { Plugin } from 'vite';
 import { __temp_dir__ } from './constants';
+import { print } from './print';
+import { createServer } from './server';
+import { shared } from './shared';
+import type { ResolvedConfig } from './types';
 
 export function Performance(): Plugin {
   return {
@@ -15,15 +16,19 @@ export function Performance(): Plugin {
       // write config to client
       writeFileSync(
         join(__temp_dir__, 'config.json'),
-        JSON.stringify(config, null, 2)
+        JSON.stringify(config, null, 2),
       );
     },
 
     configureServer(server) {
-      const port = (server.config as unknown as Required<UserConfig>).perf
-        .socketPort!;
-      // process.exit(port);
-      createServer(port);
+      const config = server.config as ResolvedConfig;
+      createServer(config);
+
+      return () => {
+        print.info(
+          `Performance server is running at: http://localhost:${config.server.port}`,
+        );
+      };
     },
   };
 }

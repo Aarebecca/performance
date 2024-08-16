@@ -1,14 +1,12 @@
 import { WebSocketServer } from 'ws';
 import { exportReport } from './reporter';
 import { print } from './print';
-import chalk from 'chalk';
+import type { ResolvedConfig } from './types';
 
-export function createServer(port: number) {
+export function createServer(config: ResolvedConfig) {
+  const socket = config.perf.socket;
+  const port = socket.port;
   const wss = new WebSocketServer({ port });
-
-  const config = {
-    timeout: 10000,
-  };
 
   wss.on('connection', (ws) => {
     let timeout: NodeJS.Timeout;
@@ -26,7 +24,7 @@ export function createServer(port: number) {
       timeout = setTimeout(() => {
         print.error('Client timeout.');
         close();
-      }, config.timeout);
+      }, socket.timeout);
 
       const str = message.toString();
       try {
