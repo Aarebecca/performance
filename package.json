@@ -1,7 +1,18 @@
 {
   "name": "iperf",
   "version": "0.1.0-beta.1",
-  "description": "Generic Frontend Performance Test Framework",
+  "description": "Performance Testing Framework for Front-end Renderers",
+  "keywords": [
+    "performance",
+    "testing",
+    "framework",
+    "frontend",
+    "renderers"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aarebecca/performance"
+  },
   "license": "ISC",
   "author": "Aarebecca",
   "main": "./dist/index.js",
