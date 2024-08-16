@@ -4,8 +4,11 @@ import type { Test } from './types';
 
 export class Runner {
   #init() {
-    const root = document.getElementById('__test_root__')!;
-    root.innerHTML = '';
+    this.container.innerHTML = '';
+  }
+
+  private get container() {
+    return document.getElementById('__test_root__')!;
   }
 
   constructor(private tasks: Record<string, Test>) {}
@@ -23,7 +26,7 @@ export class Runner {
 
   async iterate(name: string, callback: Test) {
     const perf = new Performance();
-    const context = { perf };
+    const context = { perf, container: this.container };
     const results = [];
 
     const iterations = callback.iteration ?? 10;

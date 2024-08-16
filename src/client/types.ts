@@ -7,6 +7,7 @@ export interface FrameRecord {
 
 export interface TestContext {
   perf: Performance;
+  container: HTMLElement;
 }
 
 export interface Test {
@@ -16,4 +17,6 @@ export interface Test {
    * Default is 10.
    */
   iteration?: number;
+  skip?: boolean;
+  only?: boolean;
 }

@@ -24,9 +24,18 @@ export class Transporter {
   }
 
   private ready() {
+    const entries = Object.entries(tasks);
+
+    const only: string[] = [];
+    const rest: string[] = [];
+    entries.forEach(([task, test]) => {
+      if (test.only) only.push(task);
+      else if (!test.skip) rest.push(task);
+    });
+
     this.send({
       signal: 'ready',
-      tasks: Object.keys(tasks),
+      tasks: only.length > 0 ? only : rest,
       userAgent: navigator.userAgent,
     });
   }
