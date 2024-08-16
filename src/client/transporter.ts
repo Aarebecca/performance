@@ -56,6 +56,6 @@ export class Transporter {
 
   private disconnect() {
     this.send({ signal: 'disconnect' });
-    this.ws.close();
+    window.close();
   }
 }
