@@ -1,6 +1,7 @@
 import { WebSocketServer } from 'ws';
-import { exportReport } from './reporter';
 import { print } from './print';
+import type { ClientMessage, ServerMessage } from './protocol';
+import { exportReport } from './reporter';
 import type { ResolvedConfig } from './types';
 
 export function createServer(config: ResolvedConfig) {
@@ -13,6 +14,10 @@ export function createServer(config: ResolvedConfig) {
     let schedular: Schedular;
 
     print.info(`Open connection on port: ${port}`);
+
+    const send = (message: ServerMessage) => {
+      ws.send(JSON.stringify(message));
+    };
 
     const close = () => {
       ws.send(JSON.stringify({ signal: 'disconnect' }));
@@ -28,30 +33,43 @@ export function createServer(config: ResolvedConfig) {
 
       const str = message.toString();
       try {
-        const data = JSON.parse(str);
+        const data = JSON.parse(str) as ClientMessage;
         const { signal } = data;
 
         if (signal === 'ready') {
-          schedular = new Schedular(data.userAgent, data.list);
-          print.info(`Ready to start, tasks: ${data.list.length}`);
+          schedular = new Schedular(data.userAgent, data.tasks);
+          print(`Total tasks: ${data.tasks.length}`);
         } else if (signal === 'request') {
           const task = schedular.assign();
           if (task) {
             print(`Assigning task: \x1b[32m\x1b[1m${task}\x1b[0m`);
-            ws.send(JSON.stringify({ signal: 'assign', task }));
+            send({ signal: 'assign', task });
           } else {
-            ws.send(JSON.stringify({ signal: 'complete' }));
+            send({ signal: 'complete' });
             print.success('All tasks completed.');
             await schedular.save();
             process.exit(0);
           }
         } else if (signal === 'report') {
-          if (!data.result.passed) print.error(`Task failed: ${data.task}`);
+          switch (data.result.status) {
+            case 'passed':
+              print.success(`Task ${data.task} completed`);
+              break;
+            case 'skipped':
+              print.warn(`Task ${data.task} skipped`);
+              break;
+            case 'failed':
+              print.error(`Task ${data.task} failed`);
+              break;
+            default:
+              break;
+          }
+
           schedular.report(data.task, data.result);
         }
       } catch (e: any) {
-        ws.send(`error: ${e.message}`);
-        ws.send(JSON.stringify({ signal: 'disconnect' }));
+        print.error(e.message);
+        send({ signal: 'disconnect' });
       }
     });
 
@@ -63,18 +81,11 @@ export function createServer(config: ResolvedConfig) {
   return wss;
 }
 
-type ServerSignal = 'assign' | 'complete' | 'disconnect';
-
-/**
- * @description
- * - ready: client is ready to receive tasks
- * - request: client is requesting for tasks
- * - report: client is sending back the result of current task
- */
-type ClientSignal = 'ready' | 'request' | 'report';
-
 class Schedular {
-  constructor(private userAgent: string, private tasks: string[]) {}
+  constructor(
+    private userAgent: string,
+    private tasks: string[],
+  ) {}
 
   #index = 0;
 
