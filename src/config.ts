@@ -19,7 +19,7 @@ export function defineConfig(
       },
       socket: {
         port: 3000,
-        timeout: 10 * 1000,
+        timeout: 5 * 60 * 1000, // 5 minutes
         ...config.perf?.socket,
       },
     },
