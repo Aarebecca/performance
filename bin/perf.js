@@ -22,7 +22,7 @@ if (!fs.existsSync(userConfigPath)) {
 
   fs.writeFileSync(
     actualConfigPath,
-    `import { defineConfig } from 'perf';export default defineConfig({});`,
+    `import { defineConfig } from 'iperf';export default defineConfig({});`,
   );
 }
 
