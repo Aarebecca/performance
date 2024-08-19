@@ -12,7 +12,7 @@ export async function exportReport(data: any) {
   const deviceInfo = await getDeviceInfo();
   const repoHash = getRepoInfo();
 
-  const serial = deviceInfo.serial.slice(0, 8);
+  const serial = deviceInfo.os.serial.slice(0, 8);
 
   const filename = `${serial}_${getTimeString()}.json`;
 
@@ -42,17 +42,24 @@ export async function exportReport(data: any) {
 async function getDeviceInfo() {
   const info: Record<string, any> = {};
 
-  assign(info, await si.osInfo(), ['arch', 'distro', 'serial']);
+  assign(info, await si.osInfo(), 'os', ['arch', 'distro', 'serial']);
 
-  if (info.serial) info.serial = getHash(info.serial);
+  if (info.os.serial) info.os.serial = getHash(info.os.serial);
 
-  assign(info, await si.cpu(), ['manufacturer', 'brand', 'speed', 'cores']);
+  assign(info, await si.cpu(), 'cpu', [
+    'manufacturer',
+    'brand',
+    'speed',
+    'cores',
+  ]);
 
-  assign(info, await si.mem(), ['total', 'free']);
+  assign(info, await si.mem(), 'memory', ['total', 'free'], (key, value) =>
+    value ? value / 1024 / 1024 : NaN,
+  );
 
   const { controllers = [] } = await si.graphics();
   if (controllers.length) {
-    assign(info, controllers[0], ['vendor', 'model', 'cores']);
+    assign(info, controllers[0], 'gpu', ['vendor', 'model', 'cores']);
   }
 
   return info;
@@ -73,10 +80,16 @@ function getHash(data: string) {
 function assign<T extends Record<any, any>>(
   target: Record<any, any>,
   source: T,
+  group: string,
   keys: (keyof T)[],
+  callback?: (key: keyof T, value: T[keyof T]) => T[keyof T],
 ) {
+  if (!(group in target)) target[group] = {};
+
   for (const key of keys) {
-    if (source[key] !== undefined) target[key] = source[key];
+    if (source[key] !== undefined) {
+      target[group][key] = callback ? callback(key, source[key]) : source[key];
+    }
   }
   return target;
 }

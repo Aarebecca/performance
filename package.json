@@ -1,6 +1,6 @@
 {
   "name": "iperf",
-  "version": "0.1.0-beta.5",
+  "version": "0.1.0-beta.6",
   "description": "Performance Testing Framework for Front-end Renderers",
   "keywords": [
     "performance",

@@ -14,7 +14,8 @@ export function analyzeTime(values: number[], memories: number[]) {
   const variance =
     prune.reduce((acc, cur) => acc + (cur - avg) ** 2, 0) / prune.length;
 
-  const memory = memories.reduce((acc, cur) => acc + cur, 0) / memories.length;
+  const memory =
+    memories.reduce((acc, cur) => acc + cur, 0) / memories.length / 1024 / 1024;
 
   return { min, max, median, avg, variance, reliable, memory };
 }
