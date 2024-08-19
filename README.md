@@ -24,7 +24,7 @@ export const TestName = async ({ perf, container }) => {
     ctx.fillRect(0, 0, 100, 100);
   }
   perf.mark('end');
-  perf.evaluate('rendering', 'start', 'end');
+  perf.measure('rendering', 'start', 'end');
 
   // Test the rendering duration by giving a callback function
   await perf.evaluate('rendering', () => {
