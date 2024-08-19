@@ -24,12 +24,16 @@ export async function exportReport(data: any) {
 
   writeFileSync(
     reportPath,
-    JSON.stringify({
-      version: reportVersion,
-      device: deviceInfo,
-      repo: repoHash,
-      ...data,
-    }),
+    JSON.stringify(
+      {
+        version: reportVersion,
+        device: deviceInfo,
+        repo: repoHash,
+        ...data,
+      },
+      null,
+      2,
+    ),
   );
 
   print(`Report exported to: \x1b[36m${join(reportDir, filename)}\x1b[0m`);
