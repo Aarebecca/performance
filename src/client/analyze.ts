@@ -1,4 +1,4 @@
-export function analyzeTime(values: number[]) {
+export function analyzeTime(values: number[], memories: number[]) {
   const sorted = values.toSorted();
   const min = sorted[0];
   const max = sorted[sorted.length - 1];
@@ -14,7 +14,9 @@ export function analyzeTime(values: number[]) {
   const variance =
     prune.reduce((acc, cur) => acc + (cur - avg) ** 2, 0) / prune.length;
 
-  return { min, max, median, avg, variance, reliable };
+  const memory = memories.reduce((acc, cur) => acc + cur, 0) / memories.length;
+
+  return { min, max, median, avg, variance, reliable, memory };
 }
 
 export function analyzeFrame(values: number[]) {
@@ -30,7 +32,7 @@ export function analyzeFrame(values: number[]) {
   // Calculate the weighted average frame rate
   const weightedSum = FRs.reduce(
     (sum, rate, i) => sum + rate * intervals[i],
-    0
+    0,
   );
   const totalInterval = intervals.reduce((sum, interval) => sum + interval, 0);
   const weightedAvgFR = weightedSum / totalInterval;

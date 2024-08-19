@@ -1,6 +1,6 @@
 import { analyzeFrame, analyzeTime } from './analyze';
 import { Performance } from './performance';
-import type { Test } from './types';
+import type { RawRecords, Test } from './types';
 
 export class Runner {
   #init() {
@@ -27,7 +27,7 @@ export class Runner {
   async iterate(name: string, callback: Test) {
     const perf = new Performance();
     const context = { perf, container: this.container };
-    const results = [];
+    const results: RawRecords[] = [];
 
     const iterations = callback.iteration ?? 10;
 
@@ -48,7 +48,7 @@ export class Runner {
     return this.statistic(results);
   }
 
-  statistic(records: any[]) {
+  statistic(records: RawRecords[]) {
     const results = {};
 
     const _analyzeTime = () => {
@@ -56,16 +56,19 @@ export class Runner {
       const timeKeys = Object.keys(records[0].time);
 
       const time: Record<string, number[]> = {};
+      const memory: Record<string, number[]> = {};
 
       records.forEach((record) => {
         timeKeys.forEach((key) => {
           if (!time[key]) time[key] = [];
-          time[key].push(record.time[key]);
+          if (!memory[key]) memory[key] = [];
+          time[key].push(record.time![key].duration);
+          memory[key].push(record.time![key].memory);
         });
       });
 
       const timeResult = timeKeys.map((key) => {
-        const result = analyzeTime(time[key]);
+        const result = analyzeTime(time[key], memory[key]);
 
         if (!result.reliable) {
           console.warn(`The evaluation of ${key} is too fast to be reliable.`);
@@ -82,7 +85,7 @@ export class Runner {
       if (!records[0].frame) return;
 
       const frameResults = records.map((record) =>
-        analyzeFrame(record.frame.map((f: { time: number }) => f.time)),
+        analyzeFrame(record.frame?.map((f: { time: number }) => f.time) || []),
       );
       const sorted = frameResults.toSorted((a, b) => a.variance - b.variance);
       Object.assign(results, { frame: sorted[0] });
