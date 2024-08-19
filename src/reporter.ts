@@ -8,6 +8,7 @@ import { shared } from './shared';
 
 export async function exportReport(data: any) {
   const reportDir = shared.config.perf.report.dir;
+  const reportVersion = '1.0';
   const deviceInfo = await getDeviceInfo();
   const repoHash = getRepoInfo();
 
@@ -23,7 +24,12 @@ export async function exportReport(data: any) {
 
   writeFileSync(
     reportPath,
-    JSON.stringify({ device: deviceInfo, repo: repoHash, ...data }),
+    JSON.stringify({
+      version: reportVersion,
+      device: deviceInfo,
+      repo: repoHash,
+      ...data,
+    }),
   );
 
   print(`Report exported to: \x1b[36m${join(reportDir, filename)}\x1b[0m`);
