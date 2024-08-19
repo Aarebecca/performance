@@ -21,7 +21,7 @@ export class Performance {
   evaluate(
     name: string,
     argv: string | (() => Promise<void>),
-    end?: string
+    end?: string,
   ): number | Promise<number> {
     if (typeof argv === 'function') {
       const call = argv;
@@ -60,7 +60,7 @@ export class Performance {
     if (!this.#frameEnable) return;
     this.#frameRecord.push({
       time: performance.now(),
-      memory: performance.memory?.usedJSHeapSize || NaN,
+      memory: (performance as any).memory?.usedJSHeapSize || NaN,
     });
   }
 
