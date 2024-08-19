@@ -32,7 +32,8 @@
     "cp:type": "cp ./src/global.d.ts ./dist",
     "watch": "rm -rf dist && run-p watch:*",
     "watch:node": "tsc -w",
-    "watch:client": "tsc --project ./src/client/tsconfig.json -w"
+    "watch:client": "tsc --project ./src/client/tsconfig.json -w",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "glob": "^11.0.0",
