@@ -1,5 +1,12 @@
 import type { Performance } from './performance';
 
+export interface TimeRecord {
+  [key: string]: {
+    duration: number;
+    memory: number;
+  };
+}
+
 export interface FrameRecord {
   time: number;
   memory: number;
@@ -19,4 +26,9 @@ export interface Test {
   iteration?: number;
   skip?: boolean;
   only?: boolean;
+}
+
+export interface RawRecords {
+  time?: TimeRecord;
+  frame?: FrameRecord[];
 }
