@@ -54,7 +54,7 @@ npx perf
 You can configure iPerf by creating a `perf.config.js` file in the root of your project:
 
 ```javascript
-import { defineConfig } from 'perf';
+import { defineConfig } from 'iperf';
 
 export default defineConfig({
   perf: {
