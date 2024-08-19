@@ -24,11 +24,7 @@ export class Performance {
     const [start, end] = [name + '-start', name + '-end'];
     this.mark(start);
 
-    try {
-      await fn();
-    } catch (e) {
-      return NaN;
-    }
+    await fn();
 
     this.mark(end);
     return this.#measure(name, start, end);
