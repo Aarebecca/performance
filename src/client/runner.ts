@@ -38,6 +38,9 @@ export class Runner {
         console.log(`Start ${name} in epoch: ${i}`);
         await callback(context);
         results.push(perf.export());
+
+        // wait time to release the memory
+        await delay(500);
       }
     } catch (e) {
       console.error(`Error in ${name}:`, e);
@@ -98,4 +101,8 @@ export class Runner {
 
     return results;
   }
+}
+
+async function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

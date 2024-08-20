@@ -26,10 +26,14 @@ export function analyzeTime(values: number[], memories: number[]) {
     deltas.push(memories[0] ?? NaN);
   }
 
-  const memory =
-    deltas.reduce((acc, cur) => acc + cur, 0) / deltas.length / 1024 / 1024;
-
-  return { min, max, median, avg, variance, reliable, memory };
+  return {
+    min,
+    max,
+    median,
+    avg,
+    variance,
+    reliable,
+  };
 }
 
 export function analyzeFrame(values: number[]) {
@@ -58,4 +62,8 @@ export function analyzeFrame(values: number[]) {
   const min = Math.min(...FRs);
 
   return { avg: Math.round(weightedAvgFR), variance, min };
+}
+
+function formatMemory(memory: number) {
+  return (memory / 1024 / 1024).toFixed(2) + 'MB';
 }
