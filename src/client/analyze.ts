@@ -14,8 +14,20 @@ export function analyzeTime(values: number[], memories: number[]) {
   const variance =
     prune.reduce((acc, cur) => acc + (cur - avg) ** 2, 0) / prune.length;
 
+  const deltas: number[] = [];
+  if (memories.length > 1) {
+    for (let i = 1; i < memories.length; i++) {
+      const prev = memories[i - 1];
+      const curr = memories[i];
+      const delta = curr - prev;
+      deltas.push(delta);
+    }
+  } else {
+    deltas.push(memories[0] ?? NaN);
+  }
+
   const memory =
-    memories.reduce((acc, cur) => acc + cur, 0) / memories.length / 1024 / 1024;
+    deltas.reduce((acc, cur) => acc + cur, 0) / deltas.length / 1024 / 1024;
 
   return { min, max, median, avg, variance, reliable, memory };
 }
