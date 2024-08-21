@@ -1,5 +1,5 @@
 export function analyzeTime(values: number[], memories: number[]) {
-  const sorted = values.toSorted();
+  const sorted = values.toSorted((a, b) => a - b);
   const min = sorted[0];
   const max = sorted[sorted.length - 1];
 
