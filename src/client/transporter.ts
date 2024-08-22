@@ -10,17 +10,18 @@ export class Transporter {
   constructor(private ws: WebSocket) {
     this.runner = new Runner(tasks);
 
-    ws.onopen = () => {
-      this.ready();
-      this.request();
-    };
+    const type = this.getSearchParam('type');
+    const task = this.getSearchParam('task');
 
-    ws.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-      const { signal } = data;
-      if (signal === 'assign') this.execute(data.task);
-      else if (signal === 'complete') this.disconnect();
+    ws.onopen = () => {
+      if (type === 'init') this.ready();
+      else if (type === 'assign' && task) this.execute(task);
     };
+  }
+
+  private getSearchParam(param: string) {
+    const params = new URLSearchParams(location.search);
+    return params.get(param);
   }
 
   private ready() {
@@ -44,18 +45,8 @@ export class Transporter {
     this.ws.send(JSON.stringify(msg));
   }
 
-  private request() {
-    this.send({ signal: 'request' });
-  }
-
   private async execute(task: string) {
     const result = await this.runner.execute(task);
     this.send({ signal: 'report', task, result });
-    this.send({ signal: 'request' });
-  }
-
-  private disconnect() {
-    this.send({ signal: 'disconnect' });
-    window.close();
   }
 }

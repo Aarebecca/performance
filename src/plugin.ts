@@ -2,8 +2,8 @@ import { writeFileSync } from 'fs';
 import { join } from 'path';
 import type { Plugin } from 'vite';
 import { __temp_dir__ } from './constants';
+import { Controller } from './controller';
 import { print } from './print';
-import { createServer } from './server';
 import { shared } from './shared';
 import type { ResolvedConfig } from './types';
 
@@ -22,12 +22,15 @@ export function Performance(): Plugin {
 
     configureServer(server) {
       const config = server.config as ResolvedConfig;
-      createServer(config);
+      const controller = new Controller();
+      controller.createServer(config);
 
       return () => {
-        print.info(
-          `Performance server is running at: http://localhost:${config.server.port}`,
-        );
+        const host = `http://localhost:${config.server.port}`;
+
+        print.info(`Performance server is running at: ${host}`);
+
+        controller.start(host);
       };
     },
   };

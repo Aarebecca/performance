@@ -22,11 +22,14 @@ export function defineConfig(
         timeout: 5 * 60 * 1000, // 5 minutes
         ...config.perf?.socket,
       },
+      browser: {
+        ...config.perf?.browser,
+      },
     },
     root: __temp_dir__,
     server: {
       port: 8080,
-      open: '/',
+      open: false,
       ...server,
     },
   };

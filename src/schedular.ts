@@ -1,3 +1,4 @@
+import { ClientReportMessage } from './protocol';
 import { exportReport } from './reporter';
 
 export class Schedular {
@@ -10,14 +11,15 @@ export class Schedular {
 
   private reports: Record<string, any> = {};
 
-  assign(): string | null {
+  getTask() {
     if (this.#index < this.tasks.length) {
       return this.tasks[this.#index++];
     }
     return null;
   }
 
-  report(task: string, result: any) {
+  report(data: ClientReportMessage) {
+    const { task, result } = data;
     this.reports[task] = result;
   }
 

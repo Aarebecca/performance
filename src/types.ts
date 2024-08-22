@@ -1,3 +1,4 @@
+import type { LaunchOptions } from 'playwright';
 import type {
   ResolvedConfig as ViteResolvedConfig,
   UserConfig as ViteUserConfig,
@@ -36,6 +37,7 @@ interface PerfConfig {
      */
     timeout?: number;
   };
+  browser?: Pick<LaunchOptions, 'headless' | 'devtools' | 'args'>;
 }
 
 type DeepRequired<T> = {
