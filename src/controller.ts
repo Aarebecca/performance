@@ -11,9 +11,9 @@ import type { ResolvedConfig } from './types';
 export class Controller {
   private host?: string;
 
-  private browser!: Browser;
+  private browser?: Browser;
 
-  private page!: Page;
+  private page?: Page;
 
   private schedular!: Schedular;
 
@@ -36,9 +36,9 @@ export class Controller {
   }
 
   async open(searchParams: Record<string, any> = {}) {
-    await this.page.close();
+    await this.page?.close();
 
-    this.page = await this.browser.newPage();
+    this.page = await this.browser!.newPage();
     const url = new URL(this.host!);
     url.search = new URLSearchParams(searchParams).toString();
     await this.page.goto(url.toString());
