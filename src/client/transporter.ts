@@ -61,6 +61,12 @@ export class Transporter {
 
   private preview() {
     const select = document.createElement('select');
+
+    const empty = document.createElement('option');
+    empty.value = '';
+    empty.text = '⚠️ Select a task to preview';
+    select.appendChild(empty);
+
     for (const task in tasks) {
       const option = document.createElement('option');
       option.value = task;
