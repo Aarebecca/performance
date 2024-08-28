@@ -5,6 +5,8 @@ const path = require('path');
 const { spawn } = require('child_process');
 require('../dist/setup.js');
 
+const [preview] = process.argv.slice(2);
+
 const userConfigPath = path.join(process.cwd(), 'perf.config.js');
 const vitePath = path.join(
   path.dirname(require.resolve('vite')),
@@ -26,7 +28,10 @@ if (!fs.existsSync(userConfigPath)) {
   );
 }
 
-console.log('Start to run performance test...');
+if (preview === 'preview') {
+  console.log('Enter preview mode...');
+  process.env.PREVIEW = true;
+} else console.log('Start to run performance test...');
 
 const child = spawn('node', [vitePath, '--config', actualConfigPath]);
 

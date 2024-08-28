@@ -23,7 +23,7 @@ export function Performance(): Plugin {
     configureServer(server) {
       const config = server.config as ResolvedConfig;
       const controller = new Controller();
-      controller.createServer(config);
+      if (!process.env.PREVIEW) controller.createServer(config);
 
       return () => {
         const host = `http://localhost:${config.server.port}`;

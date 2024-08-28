@@ -70,6 +70,15 @@ export default defineConfig({
 });
 ```
 
+## Preview Mode
+
+In this mode, iPerf will open a browser window to preview the test. You can enable it by adding the `preview` option:
+
+```bash
+npx perf preview
+```
+
+
 ## License
 
 &copy; 2024 Aarebecca. ISC License.

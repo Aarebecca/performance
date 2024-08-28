@@ -101,6 +101,19 @@ export class Runner {
 
     return results;
   }
+
+  async preview(task: string) {
+    const test = this.tasks[task];
+
+    if (typeof test === 'function') {
+      const perf = new Performance();
+      const context = { perf, container: this.container };
+      this.#init();
+      await test(context);
+
+      console.log(perf.export());
+    }
+  }
 }
 
 async function delay(ms: number) {

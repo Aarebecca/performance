@@ -17,6 +17,10 @@ export class Controller {
 
   private schedular!: Schedular;
 
+  private get mode() {
+    return process.env.PREVIEW ? 'preview' : 'test';
+  }
+
   async createServer(config: ResolvedConfig) {
     const socket = config.perf.socket;
     const port = socket.port;
@@ -29,7 +33,8 @@ export class Controller {
 
   async initBrowser() {
     this.browser = await chromium.launch({
-      headless: shared.config.perf.browser.headless,
+      headless:
+        this.mode === 'preview' ? false : shared.config.perf.browser.headless,
     });
 
     return this.browser;
@@ -78,6 +83,7 @@ export class Controller {
   async start(host: string) {
     this.host = host;
     await this.initBrowser();
-    await this.open({ type: 'init' });
+    if (this.mode === 'preview') await this.open({ type: 'preview' });
+    else await this.open({ type: 'init' });
   }
 }

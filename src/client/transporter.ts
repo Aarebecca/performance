@@ -7,16 +7,25 @@ const tasks = { ...tests } as Record<string, Test>;
 export class Transporter {
   private runner: Runner;
 
-  constructor(private ws: WebSocket) {
+  private ws?: WebSocket;
+
+  constructor(port: string) {
     this.runner = new Runner(tasks);
 
     const type = this.getSearchParam('type');
     const task = this.getSearchParam('task');
 
-    ws.onopen = () => {
-      if (type === 'init') this.ready();
-      else if (type === 'assign' && task) this.execute(task);
-    };
+    if (type === 'preview') {
+      this.preview();
+    } else {
+      const ws = new WebSocket(`ws://localhost:${port}`);
+      ws.onopen = () => {
+        if (type === 'preview') this.preview();
+        else if (type === 'init') this.ready();
+        else if (type === 'assign' && task) this.execute(task);
+      };
+      this.ws = ws;
+    }
   }
 
   private getSearchParam(param: string) {
@@ -42,11 +51,24 @@ export class Transporter {
   }
 
   private send(msg: Record<string, any>) {
-    this.ws.send(JSON.stringify(msg));
+    this.ws?.send(JSON.stringify(msg));
   }
 
   private async execute(task: string) {
     const result = await this.runner.execute(task);
     this.send({ signal: 'report', task, result });
+  }
+
+  private preview() {
+    const select = document.createElement('select');
+    for (const task in tasks) {
+      const option = document.createElement('option');
+      option.value = task;
+      option.text = task;
+      select.appendChild(option);
+    }
+    select.onchange = () => this.runner.preview(select.value);
+
+    document.body.prepend(select);
   }
 }
