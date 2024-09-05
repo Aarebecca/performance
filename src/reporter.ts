@@ -105,6 +105,6 @@ function getTimeString(date = new Date()) {
     second: '2-digit',
   })
     .format(date)
-    .replace(/\//g, '-')
+    .replace(/\/|:/g, '-')
     .replace(' ', '_');
 }
