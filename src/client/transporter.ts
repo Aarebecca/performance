@@ -33,6 +33,12 @@ export class Transporter {
     return params.get(param);
   }
 
+  private setSearchParam(param: string, value: string) {
+    const params = new URLSearchParams(location.search);
+    params.set(param, value);
+    history.replaceState(null, '', `${location.pathname}?${params}`);
+  }
+
   private ready() {
     const entries = Object.entries(tasks);
 
@@ -60,21 +66,35 @@ export class Transporter {
   }
 
   private preview() {
+    const container = document.createElement('div');
     const select = document.createElement('select');
 
     const empty = document.createElement('option');
     empty.value = '';
     empty.text = '⚠️ Select a task to preview';
     select.appendChild(empty);
-
     for (const task in tasks) {
       const option = document.createElement('option');
       option.value = task;
       option.text = task;
       select.appendChild(option);
     }
-    select.onchange = () => this.runner.preview(select.value);
+    select.onchange = () => {
+      this.runner.preview(select.value);
+      this.setSearchParam('preset', select.value);
+    };
+    const preset = this.getSearchParam('preset');
+    if (preset) select.value = preset;
 
-    document.body.prepend(select);
+    // button
+    const button = document.createElement('button');
+    button.textContent = 'Run Current';
+    button.onclick = () => {
+      if (select.value) this.runner.preview(select.value);
+    };
+
+    document.body.prepend(container);
+    container.appendChild(select);
+    container.appendChild(button);
   }
 }
