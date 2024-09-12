@@ -101,13 +101,14 @@ export class Transporter {
       }
     };
     input.oninput = () => {
-      const value = input.value.toLowerCase();
-      filter(value);
+      const value = input.value;
+      filter(value.toLowerCase());
+      if (value) this.setSearchParam('search', value);
     };
     const search = this.getSearchParam('search');
     if (search) {
       input.value = search;
-      filter(search);
+      filter(search.toLowerCase());
     }
 
     // button
