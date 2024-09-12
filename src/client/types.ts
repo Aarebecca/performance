@@ -18,7 +18,7 @@ export interface TestContext {
 }
 
 export interface Test {
-  (context: TestContext): Promise<void>;
+  (context: TestContext): Promise<any>;
   /**
    * Number of iterations to run the test.
    * Default is 10.
