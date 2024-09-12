@@ -80,11 +80,35 @@ export class Transporter {
       select.appendChild(option);
     }
     select.onchange = () => {
-      this.runner.preview(select.value);
-      this.setSearchParam('preset', select.value);
+      const value = select.value;
+      this.runner.preview(value);
+      if (value) this.setSearchParam('preset', value);
     };
     const preset = this.getSearchParam('preset');
     if (preset) select.value = preset;
+
+    // search input
+    const input = document.createElement('input');
+    input.style.width = '120px';
+    input.placeholder = 'Search';
+    const filter = (value: string) => {
+      for (const option of select.options) {
+        if (option.value.toLowerCase().includes(value)) {
+          option.hidden = false;
+        } else {
+          option.hidden = true;
+        }
+      }
+    };
+    input.oninput = () => {
+      const value = input.value.toLowerCase();
+      filter(value);
+    };
+    const search = this.getSearchParam('search');
+    if (search) {
+      input.value = search;
+      filter(search);
+    }
 
     // button
     const button = document.createElement('button');
@@ -95,6 +119,7 @@ export class Transporter {
 
     document.body.prepend(container);
     container.appendChild(select);
+    container.appendChild(input);
     container.appendChild(button);
   }
 }
