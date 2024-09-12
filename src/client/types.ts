@@ -26,6 +26,11 @@ export interface Test {
   iteration?: number;
   skip?: boolean;
   only?: boolean;
+  /**
+   * Execute after each iteration.
+   * @param returns The return value of the test.
+   */
+  after?: (returns: any) => Promise<void>;
 }
 
 export interface RawRecords {

@@ -36,9 +36,10 @@ export class Runner {
       for (let i = 0; i < iterations; i++) {
         this.#init();
         console.log(`Start ${name} in epoch: ${i}`);
-        await callback(context);
+        const returns = await callback(context);
         results.push(perf.export());
 
+        await callback.after?.(returns);
         // wait time to release the memory
         await delay(500);
       }
@@ -109,9 +110,10 @@ export class Runner {
       const perf = new Performance();
       const context = { perf, container: this.container };
       this.#init();
-      await test(context);
+      const returns = await test(context);
 
       console.log(perf.export());
+      await test.after?.(returns);
     }
   }
 }
