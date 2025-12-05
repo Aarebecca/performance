@@ -21,6 +21,10 @@ interface PerfConfig {
    * The test regex to run
    */
   testRegex?: string;
+  /**
+   * Specific test files to run
+   */
+  testFiles?: string[];
   report?: {
     /**
      * The directory to store the reports

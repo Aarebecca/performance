@@ -5,7 +5,25 @@ const path = require('path');
 const { spawn } = require('child_process');
 require('../dist/setup.js');
 
-const [preview] = process.argv.slice(2);
+// Parse command line arguments
+const args = process.argv.slice(2);
+let preview = false;
+let testFiles = [];
+
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg === 'preview') {
+    preview = true;
+  } else if (arg === '--file' || arg === '-f') {
+    // Collect all file arguments
+    i++;
+    while (i < args.length && !args[i].startsWith('-') && args[i] !== 'preview') {
+      testFiles.push(args[i]);
+      i++;
+    }
+    i--; // Step back one since the loop will increment
+  }
+}
 
 const userConfigPath = path.join(process.cwd(), 'perf.config.js');
 const vitePath = path.join(
@@ -22,16 +40,26 @@ if (!fs.existsSync(userConfigPath)) {
     'perf.config.js',
   );
 
+  // Pass testFiles to config if specified
+  const testFilesConfig = testFiles.length > 0
+    ? `testFiles: ${JSON.stringify(testFiles)},`
+    : '';
+
   fs.writeFileSync(
     actualConfigPath,
-    `import { defineConfig } from 'iperf';export default defineConfig({});`,
+    `import { defineConfig } from 'iperf';export default defineConfig({perf: {${testFilesConfig}}});`,
   );
 }
 
-if (preview === 'preview') {
+if (preview) {
   console.log('Enter preview mode...');
   process.env.PREVIEW = true;
-} else console.log('Start to run performance test...');
+} else {
+  const fileInfo = testFiles.length > 0
+    ? ` (specific files: ${testFiles.join(', ')})`
+    : '';
+  console.log(`Start to run performance test${fileInfo}...`);
+}
 
 const child = spawn('node', [vitePath, '--config', actualConfigPath]);
 

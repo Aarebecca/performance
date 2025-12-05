@@ -49,6 +49,23 @@ export const TestName = async ({ perf, container }) => {
 npx perf
 ```
 
+### Run specific test files
+
+You can specify which test files to run using the `--file` or `-f` option:
+
+```bash
+# Run a single test file
+npx perf --file test.perf.ts
+
+# Run multiple test files
+npx perf --file test1.perf.ts test2.perf.ts
+
+# Short form
+npx perf -f test.perf.ts
+```
+
+By default, iPerf will run all files matching the pattern `**/*.perf.ts` in your project.
+
 ## Configuration
 
 You can configure iPerf by creating a `perf.config.js` file in the root of your project:

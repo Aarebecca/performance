@@ -25,6 +25,7 @@ export function defineConfig(
       browser: {
         ...config.perf?.browser,
       },
+      testFiles: config.perf?.testFiles,
     },
     root: __temp_dir__,
     server: {
